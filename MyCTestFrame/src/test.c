@@ -34,6 +34,9 @@ int RUN_ALL_TESTS() {
             printf(RED_HL(" pass: %.2lf%%"), rate);
         }
         printf(BLUE_HL("    total : %d    succuss : %d\n"), test_info.total, test_info.success);
+        if (i != func_count - 1) {
+            printf("\n");
+        }
     }
     return 0;
 }

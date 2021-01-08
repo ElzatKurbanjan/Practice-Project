@@ -13,13 +13,17 @@ int add(int a, int b){
 }
 
 TEST(func, add) {
-    EXPECT_EQ(add(1,2), 3);
-    EXPECT_EQ(add(2,4), 7);
-    EXPECT_EQ(add(2,4), 6);
+    EXPECT_EQ(add(1, 2), 3);
+    EXPECT_EQ(add(2, 4), 7);
+    EXPECT_EQ(add(2, 4), 6);
 }
 
 TEST(func, add2) {
     EXPECT_EQ(add(1, -1), 0);
+    EXPECT_NE(add(2, 3), 5);
+    EXPECT_LT(add(2, 3), 5);
+    EXPECT_EQ(add(2, 3), 5);
+    EXPECT_LE(add(2, 3), 5);
 }
 
 int main(int argc, char *argv[]) {
