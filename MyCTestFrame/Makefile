@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean all
 
 all: use_test.o ./src/test.o
 	gcc ./src/test.o use_test.o -o ./bin/my_app
