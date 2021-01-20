@@ -16,10 +16,10 @@ typedef struct node {
 } Node;
 
 Node arr[MAX + 5];
-int pos[MAX + 5];
-int l[MAX + 5];
-int r[MAX + 5];
-Node result[MAX + 5];
+int pos[MAX + 5]; // 索引表示第i个输入的元素，对应值表示其排序后所在位置
+int l[MAX + 5];   // 索引表示排序后的位置，对应值表示排序后的前一个元素的索引
+int r[MAX + 5];   // 索引表示排序后的位置，对应值表示排序后的后一个元素的索引
+Node result[MAX + 5];  // 每一个元素的邻值及其index
 
 int cmp(const void* a, const void* b) {
     Node *p = (Node *)a;
@@ -40,10 +40,11 @@ int main() {
 
     qsort(&arr[1], n, sizeof(Node), cmp);
 
+    /* 初始化0和n+1元素，使其值与输入值的差值尽可能的大 */
     arr[0].value = 0x80000000;
     arr[n + 1].value = 0x7fffffff;
 
-
+    /* 创建排序后的链表结构 */
     for (int i = 1; i <=n ; i++)
     {
         l[i] = i - 1;
