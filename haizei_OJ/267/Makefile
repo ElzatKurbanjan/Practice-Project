@@ -15,8 +15,8 @@ run: ${TEST_SET} a.out
 	./a.out < test_data/12
 	./a.out < test_data/13
 	./a.out < test_data/14
-a.out : dum_version.c
-	gcc dum_version.c
+a.out : solution.c
+	gcc solution.c
 
 ${TEST_SET} : 
 
