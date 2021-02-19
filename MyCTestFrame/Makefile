@@ -1,13 +1,23 @@
-.PHONY: clean all
+CC := gcc
+SRC := $(wildcard ./src/*.c)
+OBJS := use_test.o $(SRC:%.c=%.o)
 
-all: use_test.o ./src/test.o
-	gcc ./src/test.o use_test.o -o ./bin/my_app
+LIBS := 
+CFLAGS :=
+INCLUDES := -I./include
 
-./src/test.o: ./src/test.c ./include/test.h ./include/color.h
-	gcc -I./include -c ./src/test.c -o ./src/test.o
+TARGET := ./bin/test
 
-use_test.o: use_test.c ./include/test.h
-	gcc -I./include -c use_test.c
+$(TARGET) : $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
-clean:
-	-rm ./bin/my_app ./src/*.o ./*.o
+%.o : %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $^ -o $@
+
+.PHONY : run
+run : $(TARGET)
+	$(TARGET)
+
+.PHONY : clean
+clean :
+	-rm $(OBJS)	$(TARGET)
