@@ -1,12 +1,12 @@
 CC := gcc
 SRC := $(wildcard ./src/*.c)
-OBJS := use_test.o $(SRC:%.c=%.o)
+OBJS := example.o $(SRC:%.c=%.o)
 
 LIBS := 
 CFLAGS :=
 INCLUDES := -I./include
 
-TARGET := ./bin/test
+TARGET := ./bin/example
 
 $(TARGET) : $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
