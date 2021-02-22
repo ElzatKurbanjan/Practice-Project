@@ -4,28 +4,37 @@
 	> Mail: 
 	> Created Time: Thu 07 Jan 2021 06:03:05 AM PST
  ************************************************************************/
-#include <test.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 
-static Function func_arr[100] = {0};
-static int func_count = 0;
+#include <color.h>
+#include <type.h>
+
+static FunctionList function_list = {{0, 0}, \
+                                    LIST_HEAD_INIT(function_list.list)};
 FunctionInfo test_info = {0};
 
-void add_function(TestFunc func, const char *str){
-    func_arr[func_count].func = func;
-    func_arr[func_count].name = strdup(str);
-    func_count++;
+void add_function(TestFunc func, const char *str) {
+    FunctionList *fl = (FunctionList *)malloc(sizeof(FunctionList));
+
+    fl->func.func = func;
+    fl->func.name = strdup(str);
+    list_add_tail(&fl->list, &function_list.list);
+
     return;
 }
 
 int RUN_ALL_TESTS() {
-    for (int i = 0; i < func_count; i++) {
-        printf(GREEN_HL("[====== RUN ======]") BLUE_HL(" %s\n"), func_arr[i].name);
+    FunctionList *iterator = NULL;
+    FunctionList *iterator_tmp = NULL;
+    
+    list_for_each_entry(iterator, &function_list.list, list) {
+        printf(GREEN_HL("[====== RUN ======]") BLUE_HL(" %s\n"), iterator->func.name);
         test_info.total = 0;
         test_info.success = 0;
-        func_arr[i].func();
+        iterator->func.func();
         double rate = 100.0 * test_info.success / test_info.total;
         printf(GREEN_HL("[------ END ------]"));
         if (fabs(rate - 100.0) < 1e-6) {
@@ -34,10 +43,17 @@ int RUN_ALL_TESTS() {
             printf(RED_HL(" pass: %.2lf%%"), rate);
         }
         printf(BLUE_HL("    total : %d    succuss : %d\n"), test_info.total, test_info.success);
-        if (i != func_count - 1) {
+
+        if (!list_is_last(&iterator->list, &function_list.list)) {
             printf("\n");
         }
     }
+
+    /* 释放资源 */
+    list_for_each_entry_safe(iterator, iterator_tmp, &function_list.list, list) {
+        list_del(&iterator->list);
+        free(iterator);
+    }
+
     return 0;
 }
-
