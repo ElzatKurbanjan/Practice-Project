@@ -6,9 +6,10 @@ LIBS :=
 CFLAGS :=
 INCLUDES := -I./include
 
-TARGET := ./bin/example
+TARGET := bin/example
 
 $(TARGET) : $(OBJS)
+	-mkdir bin
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 %.o : %.c
@@ -20,4 +21,4 @@ run : $(TARGET)
 
 .PHONY : clean
 clean :
-	-rm $(OBJS)	$(TARGET)
+	-rm -rf $(OBJS)	$(TARGET)
