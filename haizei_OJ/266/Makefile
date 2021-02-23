@@ -2,7 +2,7 @@ run: a.out test.sh
 	./test.sh
 
 a.out: cal.c
-	gcc cal.c -lm 
+	gcc -Werror cal.c -lm 
 
 test.sh: test_data
 
