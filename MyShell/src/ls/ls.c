@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <test.h>
 
 typedef enum _flags {
     LIST = 0,
@@ -42,7 +43,7 @@ int resolve_cmdline_args(int argc, char * argv[], int *flags) {
 }
 
 int run(int flags) {
-    
+    printf("hello ls\n");
 
     return 0;
 } 
