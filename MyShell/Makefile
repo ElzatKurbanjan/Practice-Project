@@ -14,6 +14,7 @@ export OUTPUT_DIR
 all : $(SRC_DIRS)
 
 $(SRC_DIRS) : 
+	-mkdir ./bin; \
 	$(MAKE) -C $@
 
 clean:

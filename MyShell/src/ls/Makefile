@@ -17,7 +17,9 @@ $(TARGET) : $(OBJS)
 	sed 's, \($*\).o[ :]*,\1.o $@ :,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
+ifneq ($(MAKECMDGOALS), clean)
 -include $(SRC:%.c=%.d)
+endif
 
 .PHONY : clean
 clean:
