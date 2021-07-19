@@ -59,7 +59,7 @@ int check_end(char *str, ssize_t n) {
     return 0;
 }
 
-void process_user_date(char *str) {
+void process_user_data(char *str) {
     int Atoa_offset = 'A' - 'a';
     int atoA_offset = 'a' - 'A';
     for (int i = 0; str[i] && i < MAX_DATA_SIZE; ++i) {
@@ -138,7 +138,7 @@ int run_service(int sockfd) {
                 }
                 strncat(users[tmp_fd].data, tmp_buffer, n);
                 if (check_end(tmp_buffer, n)) {
-                    process_user_date(users[tmp_fd].data);
+                    process_user_data(users[tmp_fd].data);
                     send(tmp_fd, users[tmp_fd].data, strlen(users[tmp_fd].data), 0);
                     memset(users[tmp_fd].data, 0, sizeof(users[tmp_fd].data));
                 }
