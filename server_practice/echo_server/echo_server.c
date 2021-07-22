@@ -13,11 +13,12 @@
 #define SERVER_IP_STR "0.0.0.0"
 
 #define MAX_DATA_SIZE 4096
-#define MAX_USER 512
-#define EPOLLSIZE 15
+#define MAX_USER 1024
+#define EPOLLSIZE 25
 
 typedef struct _user_data {
     char data[MAX_DATA_SIZE];
+    unsigned int current_idx;
     int user_sockfd;
     struct in_addr user_ip;
     in_port_t user_port;
@@ -52,13 +53,6 @@ int create_server_socket(uint16_t port, const char *ip) {
     return sockfd;
 }
 
-int check_end(char *str, ssize_t n) {
-    for (int i = 0; i < n; ++i) {
-        if (str[i] == '\n') return 1;
-    }
-    return 0;
-}
-
 void process_user_data(char *str) {
     int Atoa_offset = 'A' - 'a';
     int atoA_offset = 'a' - 'A';
@@ -72,14 +66,34 @@ void process_user_data(char *str) {
     return;
 }
 
+void process_msg(UserData *user, char *buf, int buf_size) {
+    for (int i = 0; i < buf_size; ++i) {
+        user->data[user->current_idx++] = buf[i];
+        if (buf[i] == '\n') {
+            process_user_data(user->data);
+            send(user->user_sockfd, user->data, strlen(user->data), 0);
+            memset(user->data, 0, sizeof(user->data));
+            user->current_idx = 0;
+        }
+    }
+}
+
 int run_service(int sockfd) {
     int epollfd = 0;
     int ret = 0;
     int nfds = 0;
     struct epoll_event ev, events[EPOLLSIZE];
-    UserData users[MAX_USER] = {0};
+    UserData *users = NULL;
     struct sockaddr_in client = {0};
     int new_fd = 0;
+
+    users = (UserData *)malloc(MAX_USER * sizeof(UserData));
+    if (NULL == users) {
+        perror("malloc");
+        ret = -1;
+        goto out;
+    }
+    memset(users, 0, sizeof(MAX_USER * sizeof(UserData)));
 
     if ((epollfd = epoll_create(1)) < 0) {
         perror("epoll_create");
@@ -136,12 +150,7 @@ int run_service(int sockfd) {
                     printf("long message, ignore!!!\n");
                     continue;
                 }
-                strncat(users[tmp_fd].data, tmp_buffer, n);
-                if (check_end(tmp_buffer, n)) {
-                    process_user_data(users[tmp_fd].data);
-                    send(tmp_fd, users[tmp_fd].data, strlen(users[tmp_fd].data), 0);
-                    memset(users[tmp_fd].data, 0, sizeof(users[tmp_fd].data));
-                }
+                process_msg(&users[tmp_fd], tmp_buffer, n);
             }
         }
     }
